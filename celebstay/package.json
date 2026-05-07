@@ -1,27 +1,210 @@
-{
-  "name": "celebstay",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "eslint": "^10.2.1",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.5.0",
-    "vite": "^8.0.10"
-  }
+import { useState, useEffect } from "react";
+
+// Fonts
+const link = document.createElement("link");
+link.href =
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap";
+link.rel = "stylesheet";
+document.head.appendChild(link);
+
+// Theme
+const PRIMARY = "#0B0B14";
+const GOLD = "#D4AF37";
+const TEXT = "#EAEAEA";
+
+// Dummy data (keep yours later)
+const OCCASIONS = [
+  { id: "birthday", label: "Birthday 🎂" },
+  { id: "anniversary", label: "Anniversary 💑" },
+  { id: "proposal", label: "Proposal 💍" },
+];
+
+export default function CelebStay() {
+  const [step, setStep] = useState("home");
+
+  // HERO AUTO SLIDE
+  const [idx, setIdx] = useState(0);
+  const images = [
+    "https://images.unsplash.com/photo-1511795409834-ef04bbd61622",
+    "https://images.unsplash.com/photo-1521334884684-d80222895322",
+    "https://images.unsplash.com/photo-1505236731927-2764bb1d8b19",
+  ];
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setIdx((i) => (i + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div style={{ fontFamily: "DM Sans", background: PRIMARY, color: TEXT }}>
+
+      {/* HEADER */}
+      <header style={{
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "16px 30px",
+        alignItems: "center",
+        position: "fixed",
+        width: "100%",
+        top: 0,
+        zIndex: 10,
+        background: "rgba(0,0,0,0.4)",
+        backdropFilter: "blur(10px)"
+      }}>
+        <h2 style={{ fontFamily: "Cormorant Garamond", color: GOLD }}>
+          CelebStay ✦
+        </h2>
+        <button style={{
+          background: GOLD,
+          border: "none",
+          padding: "10px 20px",
+          borderRadius: 30,
+          fontWeight: "bold",
+          cursor: "pointer"
+        }}>
+          Book Now
+        </button>
+      </header>
+
+      {/* HERO */}
+      <section style={{
+        height: "100vh",
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center"
+      }}>
+        {images.map((img, i) => (
+          <div key={i} style={{
+            backgroundImage: `url(${img})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "absolute",
+            inset: 0,
+            opacity: i === idx ? 1 : 0,
+            transition: "opacity 1s",
+            filter: "brightness(0.4)"
+          }} />
+        ))}
+
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <h1 style={{
+            fontFamily: "Cormorant Garamond",
+            fontSize: 50,
+            lineHeight: 1.2
+          }}>
+            Stay. Celebrate.<br />Remember Forever.
+          </h1>
+
+          <p style={{ opacity: 0.7 }}>
+            Book stays + decoration + experiences in one place
+          </p>
+
+          <button
+            onClick={() => setStep("choose")}
+            style={{
+              marginTop: 20,
+              background: GOLD,
+              padding: "14px 30px",
+              borderRadius: 40,
+              border: "none",
+              fontWeight: "bold",
+              cursor: "pointer"
+            }}
+          >
+            Plan My Celebration →
+          </button>
+        </div>
+      </section>
+
+      {/* OCCASIONS */}
+      {step === "choose" && (
+        <section style={{ padding: "60px 30px" }}>
+          <h2 style={{
+            fontFamily: "Cormorant Garamond",
+            textAlign: "center",
+            marginBottom: 30
+          }}>
+            Choose Occasion
+          </h2>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+            gap: 20
+          }}>
+            {OCCASIONS.map(o => (
+              <div key={o.id}
+                style={{
+                  background: "#111",
+                  padding: 30,
+                  borderRadius: 20,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  transition: "0.3s"
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-8px)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "none"}
+              >
+                <h3>{o.label}</h3>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* PRICING */}
+      <section style={{ padding: "60px 30px" }}>
+        <h2 style={{
+          textAlign: "center",
+          fontFamily: "Cormorant Garamond"
+        }}>
+          Packages
+        </h2>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+          gap: 20,
+          marginTop: 30
+        }}>
+          {["Silver", "Gold", "Platinum"].map((p, i) => (
+            <div key={i} style={{
+              background: "#111",
+              padding: 20,
+              borderRadius: 20,
+              textAlign: "center",
+              border: i === 1 ? `1px solid ${GOLD}` : "none"
+            }}>
+              <h3>{p}</h3>
+              <h2 style={{ color: GOLD }}>₹{(i + 2) * 1000}</h2>
+              <button style={{
+                marginTop: 10,
+                padding: 10,
+                borderRadius: 20,
+                border: "none",
+                background: GOLD,
+                cursor: "pointer"
+              }}>
+                Select
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{
+        padding: 20,
+        textAlign: "center",
+        background: "#000"
+      }}>
+        © CelebStay — Hyderabad
+      </footer>
+
+    </div>
+  );
 }
